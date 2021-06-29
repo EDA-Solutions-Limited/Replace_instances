@@ -34,13 +34,17 @@
 
 This script finds and replaces specified instances of a cell with new instances of another cell  
 The script inspiration was a mapping over of a tcl script which was resource intensive when replacing alot of intances consuming staggering amounts of ram  
-The script uses a dialog interface to ask the user which cell instances to replace and then loops over all the instances in the visible layout  
+* The C++ script uses a dialog interface to ask the user which cell instances to replace and then loops over all the instances in the visible layout  
 It then creates a generator for new cells ( To ensure T-Cells are replaced as well) and then replaces the cells  
-The chrono function was used to time the execution of the replacement in comparison with the tcl script
+The chrono function was used to time the execution of the replacement in comparison with the tcl script  
+* The Tcl script requires manual input of the cell instances to be replaced into the script  
+It also finds and replaces the specified instances  
+Additionally, the RAM usage is monitored and when the set limit is reached, the completion is reported at 10% intervals to let the user know how much has been replaced before exexution was stoppped.  
 
 ### Built With
 
 * C++
+* Tcl
 * Tanner L-Edit 
 
 
@@ -52,7 +56,7 @@ To get started with using this code, ensure you have Tanner tools installed with
 ### Prerequisites
 The C++ compiler MinGW is bundled with tanner tools so no need to install any compilers
 
-The following header files on top of the default ones added by L-Edit at default  are needed for L-Edit functions to work.
+The following header files on top of the default ones added by L-Edit at default  are needed for L-Edit functions to work in the case of the C++ script.
 * string.h
 * ldata.h
 * lcomp.h
@@ -91,7 +95,7 @@ Contributions are what makes EDA solutions the ultimate dream team. Any contribu
 
 <!-- CHANGE LOG -->
 ## Change log
-### 25-Sept-2020
+### 25-Sept-2020 C++ script
 * Added Dialog item boxes for input
 * Added chrono function to measure execution time vs the same script written in tcl
 
