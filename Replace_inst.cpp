@@ -31,17 +31,30 @@ extern "C"
 	int UPI_Entry_Point(void);
 	void Macro2(void);
 }
-
+/********************************************************************************************
+function that searches all instances of the visible cell and finds the required instances that
+match the specified cells to be replaced
+********************************************************************************************/
 std::vector<LInstance> phLEditFindInstances(LCell pCell, char library[MAX_CELL_NAME],
 											char cellname[MAX_CELL_NAME], char viewname[MAX_CELL_NAME])
 {
 	std::vector<LInstance> instances;
+	LCell mCell,gCell = NULL;
 	for (LInstance pInstance = LInstance_GetList(pCell); Assigned(pInstance); pInstance = LInstance_GetNext(pInstance))
 	{
-		LCell mCell = LCell_GetGenerator(LInstance_GetCell(pInstance));
+		//get cell generator to cover instances with generator parent cells i.e. precompiled T-Cells
+		gCell = LCell_GetGenerator(LInstance_GetCell(pInstance)); 
+		if (gCell != NULL){
+			mCell = gCell;
+		}
+		//Regular instances with non-generator parent cells
+		else{
+			mCell = LInstance_GetCell(pInstance);
+		}		
 		char lib[MAX_CELL_NAME] = "";
 		char view[MAX_CELL_NAME] = "";
 		char cell[MAX_CELL_NAME] = "";
+		//get cell details and sieve out the required cells
 		LCell_GetLibName(mCell, lib, MAX_CELL_NAME);
 		LCell_GetViewName(mCell, view, MAX_CELL_NAME);
 		LCell_GetName(mCell, cell, MAX_CELL_NAME);
@@ -59,11 +72,12 @@ void phLEditReplaceInstWithNewCell(LCell pCell, LInstance inst, char *newlib, ch
 	char name[MAX_CELL_NAME] = "";
 	LTransform_Ex99 transform = LInstance_GetTransform_Ex99(inst);
 	LCell new_cell = LCell_FindEx2(pFile, newcell, newview, newlib);
+	// if new cell is found and created
 	if (new_cell != NULL)
 	{
 		LInstance_GetName(inst, name, MAX_CELL_NAME);
-		LInstance_Delete(pCell, inst);
-		LInstance inst_new = LInstance_New_Ex99(pCell, new_cell, transform, {1, 1}, {0, 0});
+		LInstance_Delete(pCell, inst); // delete old instance 
+		LInstance inst_new = LInstance_New_Ex99(pCell, new_cell, transform, {1, 1}, {0, 0}); // place new instance in the place of the old instance
 		LInstance_SetName(pCell, inst_new, name);
 	}
 	else
@@ -85,6 +99,7 @@ void phLEditReplaceAllInstOfCell(char oldlib[MAX_CELL_NAME], char oldcell[MAX_CE
 		{
 			phLEditReplaceInstWithNewCell(pCell, inst, newlib, newcell, newview);
 			++count;
+			// counter to keep track of the completion percentages, useful when replacing a huge amount of instances
 			if (inst_list.size() > 10)
 			{
 				completion = 100 * (float)count / inst_list.size();
@@ -115,13 +130,13 @@ void replace_instances(void)
 
 	LDialogItem Dialog_Items[6] =
 		{
-			{"oldlib", "pragLib"},
-			{"oldcell", "res"},
+			{"oldlib", "RingVCO"},
+			{"oldcell", "DiffCell"},
 			{"oldview", "layout"},
-			{"newlib", "pragLib"},
-			{"newcell", "nch"},
+			{"newlib", "RingVCO"},
+			{"newcell", "Control"},
 			{"newview", "layout"},
-		};
+		}; // display dialog to allow user input 
 
 	if (LDialog_MultiLineInputBox("Replace instances", Dialog_Items, 6))
 	{
