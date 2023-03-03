@@ -1,6 +1,5 @@
 /*******************************************************************************
  * Macro Name: Replace_inst
- * Creator  : James Mutumba
  *
  * Revision History:
  * 25-Sept-2020: Added Dialog item boxes for input

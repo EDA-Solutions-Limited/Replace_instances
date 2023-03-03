@@ -101,12 +101,11 @@ Contributions are what makes EDA solutions the ultimate dream team. Any contribu
 
 <!-- LICENSE -->
 ## License
-
-Not to be distributed to anyone outside EDA solutions. 
+MIT
 
 <!-- CONTACT -->
 ## Contact
 
-James Mutumba  - jamesmutumba@eda-solutions.com
+support@eda-solutions.com
 
 Project Link: [Replace_instances](https://github.com/EDA-Solutions-Limited/Replace_instances)
